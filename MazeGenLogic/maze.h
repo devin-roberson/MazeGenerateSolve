@@ -8,19 +8,21 @@ class maze {
 private:
     std::vector<int> _maze; 
     std::vector<std::pair<int, int>> walls;
-    int n; 
-    int size; 
-    int rightWall = 1;       // right wall mapped to 0001 / 2^0
-    int bottomWall = 2;      // bottom wall mapped to 0010 / 2^1
-    int leftWall = 4;        // left wall mapped to 0100 / 2^2
-    int topWall = 8;         // top wall mapped to 1000 / 2^3
+    int n;                          // # of rows/cols
+    int size;                       // n x x
+    const int RIGHT_WALL = 1;       // right wall mapped to 0001 / 2^0
+    const int BOTTOM_WALL = 2;      // bottom wall mapped to 0010 / 2^1
+    const int LEFT_WALL = 4;        // left wall mapped to 0100 / 2^2
+    const int TOP_WALL = 8;         // top wall mapped to 1000 / 2^3
     
-    void removeWall(int src, int adj);
+    void removeWall(int src, int adj);          // removes a wall between two cells
+    std::vector<int> getNeighbors(int cell);    // gets valid neighbors of a cell
 
 public:
     maze(int n);
     void generate();
     void printMaze();
+    std::vector<int> solveMaze();
 };
 
 #endif

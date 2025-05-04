@@ -5,6 +5,8 @@
 #include <limits>
 #include <cmath>
 
+#include "maze.h"
+
 using namespace std;
 
 // wall mapping (maze.h)
