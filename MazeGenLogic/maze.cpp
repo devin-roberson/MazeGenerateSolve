@@ -55,14 +55,14 @@ void maze::generate() {
 }
 
 void maze::printMazeAndSolution() {
-    std::cout << "MAZE" << '\n';
+    // maze gen
     for (int i = 0; i < size; i++) {
         if (i % n == 0 && i > 0)
             std::cout << '\n';
         std::cout << std::hex << _maze[i];
     }
     std::cout << '\n';
-    std::cout << "SOLUTION" << '\n';
+    // solution gen
     std::vector<std::pair<int, int>> path = solveMaze();
     for (int i = 0; i < path.size(); i++) {
         std::cout << std::dec << "(" << path[i].first << ", " << path[i].second << ")" << "\n";
