@@ -12,7 +12,10 @@ maze::maze(int n) {
     _maze.resize(size, 15);                 // each cell starts with all 4 walls
     _maze[0] -= LEFT_WALL;                  // entrance - no left wall
     _maze[size - 1] -= RIGHT_WALL;          // exit - no right wall
-    // generate list of all valid walls between adjacent cells (right and bottom)
+    initializeWalls();
+}
+
+void maze::initializeWalls() {
     for (int i = 0; i < size; i++) {
         int row = i / n;
         int col = i % n;
@@ -21,11 +24,6 @@ maze::maze(int n) {
         if (row < n - 1)                    // bottom neighbor exists
             walls.emplace_back(i, i + n);
     }
-    // shuffle walls vector for random generation order
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(walls.begin(), walls.end(), g);
-    generate();
 }
 
 void maze::removeWall(int src, int adj) {
@@ -45,6 +43,10 @@ void maze::removeWall(int src, int adj) {
 }
 
 void maze::generate() {
+    // shuffle walls vector for random generation order
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(walls.begin(), walls.end(), g);
     disjointSet ds(size);
     for (auto& [a, b] : walls) {
         if (ds.findParent(a) != ds.findParent(b)) {
@@ -54,8 +56,9 @@ void maze::generate() {
     }
 }
 
-void maze::printMazeAndSolution() {
+void maze::GenerateMazeAndSolution() {
     // maze gen
+    generate();
     for (int i = 0; i < size; i++) {
         if (i % n == 0 && i > 0)
             std::cout << '\n';
@@ -108,7 +111,10 @@ std::vector<std::pair<int,int>> maze::solveMaze() {
     int end = size - 1;
     std::vector<int> distance(size, std::numeric_limits<int>::max());           // tracks shortest distance from start to each cell
     std::vector<int> previous(size, -1);                                        // store previous cell in shortest path
-    std:: priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq; // priority queue for shortest distance
+    std:: priority_queue                                        // priority queue for shortest distance
+        <std::pair<int, int>, 
+        std::vector<std::pair<int, int>>, 
+        std::greater<std::pair<int, int>>> pq;                  
     distance[start] = 0;                                        // start at beginning
     pq.push(std::make_pair(0, start));                          // add distance (0) to pq
     // Dijkstra's algorithm loop
@@ -132,6 +138,7 @@ std::vector<std::pair<int,int>> maze::solveMaze() {
             }
         }
     }
+    // generate path
     std::vector<std::pair<int,int>> path;
     for (int at = end; at != -1; at = previous[at]) {
         path.push_back(toCoords(at));

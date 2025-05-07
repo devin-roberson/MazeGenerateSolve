@@ -10,12 +10,13 @@ private:
     std::vector<std::pair<int, int>> walls;     
     int n;                                      // # of rows/cols
     int size;                                   // n x n
-    const int RIGHT_WALL = 1;                   // right wall mapped to 0001 / 2^0
-    const int BOTTOM_WALL = 2;                  // bottom wall mapped to 0010 / 2^1
-    const int LEFT_WALL = 4;                    // left wall mapped to 0100 / 2^2
-    const int TOP_WALL = 8;                     // top wall mapped to 1000 / 2^3
+    const int RIGHT_WALL = 1;                   // right wall mapped to 0001
+    const int BOTTOM_WALL = 2;                  // bottom wall mapped to 0010
+    const int LEFT_WALL = 4;                    // left wall mapped to 0100
+    const int TOP_WALL = 8;                     // top wall mapped to 1000
     
     void removeWall(int src, int adj);              // removes a wall between two cells
+    void initializeWalls();                         // generate list of all valid walls between adjacent cells
     std::vector<int> getNeighbors(int cell);        // gets neighbors of cell with no walls
     std::pair<int, int> toCoords(int cell);         // converts cell into coordinates - (row,col)
     void generate();                                // generates a random valid maze
@@ -23,7 +24,7 @@ private:
 
 public:
     maze(int n);
-    void printMazeAndSolution();            // outputs the maze itself and the solution coordinates
+    void GenerateMazeAndSolution();            // outputs the maze itself and the solution coordinates
 };
 
 #endif
