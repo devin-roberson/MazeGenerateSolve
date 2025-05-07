@@ -70,11 +70,11 @@ void maze::printMaze() {
 // find neighboring cells with no walls
 std::vector<int> maze::getNeighbors(int cell) {
     std::vector<int> neighbors;
-    int row = cell / size;      // cell / size n (for nxn) discarding remainder
-    int col = cell % size;      // gives remainder for column
+    int row = cell / n;      // cell / size n (for nxn) discarding remainder
+    int col = cell % n;      // gives remainder for column
 
     // right neighbor
-    if (col < size - 1 && !(_maze[cell] & RIGHT_WALL)) {
+    if (col < n - 1 && !(_maze[cell] & RIGHT_WALL)) {
         neighbors.push_back(cell + 1);
     }
 
@@ -85,61 +85,64 @@ std::vector<int> maze::getNeighbors(int cell) {
 
     // top neighbor
     if (row > 0 && !(_maze[cell] & TOP_WALL)) {
-        neighbors.push_back(cell - size);
+        neighbors.push_back(cell - n);
     }
 
     // bottom neighbor
-    if (row < size - 1 && !(_maze[cell] & BOTTOM_WALL)) {
-        neighbors.push_back(cell + size);
+    if (row < n - 1 && !(_maze[cell] & BOTTOM_WALL)) {
+        neighbors.push_back(cell + n);
     }
 
     return neighbors;
 }
 
-std::vector<int> maze::solveMaze() {
+std::pair<int, int> maze::toCoords(int cell) {
+    int row = cell / n;
+    int col = cell % n;
+    return std::make_pair(col, row);        // change this later
+}
+
+// solve using Dijkstra's function
+std::vector<std::pair<int,int>> maze::solveMaze() {
     int start = 0;
     int end = size - 1;
 
     std::vector<int> distance(size, std::numeric_limits<int>::max());        // tracks shortest distance from start to each cell
-    std::vector<int> previous(size, -1);                                // store previous cell in shortest path
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq; // priority queue for shortest distance
+    std::vector<int> previous(size, -1);                                    // store previous cell in shortest path
+    std:: priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq; // priority queue for shortest distance
 
-    distance[start] = 0;            // start at beginning
-    pq.push(std::make_pair(0, start));   // add distance (0) to pq
+    distance[start] = 0;                    // start at beginning
+    pq.push(std::make_pair(0, start));      // add distance (0) to pq
 
     // Dijkstra's algorithm loop
-    while (!pq.empty()) {                       
+    while (!pq.empty()) {
         int currentCell = pq.top().second;      // cell identifier for smallest distance
         int currentDist = pq.top().first;       // cell distance
         pq.pop();                               // remove from queue
-
         if (currentCell == end) {               // if exit, done
             break;
         }
-
         if (currentDist > distance[currentCell]) {  // maintains shortest path
             continue;
         }
-
         // check accessible neighbors
         for (int neighbor : getNeighbors(currentCell)) {
             int newDist = distance[currentCell] + 1;        // calculate new distance with current cell
-
-            // if shorter path found,
             if (newDist < distance[neighbor]) {
-                distance[neighbor] = newDist;               // update neighbor distance
-                previous[neighbor] = currentCell;           // set current cell as neighbor's predecessor
-                pq.push(std::make_pair(newDist, neighbor));      // add neighbor to pq
+                distance[neighbor] = newDist;                   // update neighbor distance
+                previous[neighbor] = currentCell;               // set current cell as neighbor's predecessor
+                pq.push(std::make_pair(newDist, neighbor));     // add neighbor to pq
             }
         }
     }
-// Summary: visit cell and find shortest path from it. If theres a shorter path, then update, repeat until reach the end
+    // Summary: visit cell and find shortest path from it. If theres a shorter path, then update, repeat until reach the end
 
-    // reconstruct path using previous array starting at end
-    std::vector<int> path;
+            // reconstruct path using previous array starting at end
+    std::vector<std::pair<int,int>> path;
     for (int at = end; at != -1; at = previous[at]) {
-        path.push_back(at);
+        //std::cout << "(" << int(at) % n << ", " << int(at) / n << ")" << "\n";
+        path.push_back(toCoords(at));
     }
-    reverse(path.begin(), path.end());      // reverse path to get order
+    std::reverse(path.begin(), path.end());      // reverse path to get order
     return path;
 }

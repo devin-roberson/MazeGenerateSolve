@@ -1,11 +1,11 @@
+#include <random>
+#include <algorithm>
 #include <iostream>
-#include <vector>
 #include <queue>
-#include <string>
 #include <limits>
 #include <cmath>
 
-#include "maze.h"
+//#include "maze.h"
 
 using namespace std;
 
@@ -149,7 +149,7 @@ public:
         for (int at = end; at != -1; at = previous[at]) {
             path.push_back(at);
         }
-        reverse(path.begin(), path.end());      // reverse path to get order
+        std::reverse(path.begin(), path.end());      // reverse path to get order
         return path;
     }
 
@@ -237,12 +237,9 @@ public:
 };
 // main function, check valid maze command
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        cout << "Usage: " << argv[0] << " <maze_hex_string>" << endl;
-        cout << "Example: " << argv[0] << " fed9ba9d9fca8e9ccafacf9a" << endl;
-        return 1;
-    }
-    string mazeStr = argv[1];       // get maze string from command line
+   
+    string mazeStr;       // get maze string from command line
+    std::cin >> mazeStr;
 
     // create solver and load maze
     Solver solver;
